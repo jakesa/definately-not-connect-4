@@ -1,28 +1,29 @@
 package com.jake.sarate.definitelynotconnect4.controllers
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.util.JSONPObject
-import com.jake.sarate.definitelynotconnect4.models.CreateGameResponse
-import com.jake.sarate.definitelynotconnect4.models.GameInstance
-import com.jake.sarate.definitelynotconnect4.models.GameRequest
+import com.jake.sarate.definitelynotconnect4.models.*
+import com.jake.sarate.definitelynotconnect4.services.GameService
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/api/drop_token")
-class GameController() {
-
-    private val objectMapper = ObjectMapper()
+class GameController(val gameService: GameService) {
 
     @PostMapping(consumes = ["application/json"], produces = ["application/json"])
     @ResponseStatus(HttpStatus.OK)
     fun createGame(@RequestBody body: GameRequest): CreateGameResponse {
-        val game = GameInstance(
-            columns = body.columns,
-            rows = body.rows,
-            players = body.players
-        )
+        val game = gameService.createGame(body)
         return CreateGameResponse(game.gameId)
+    }
+
+    @GetMapping("/{gameId}",produces = ["application/json"])
+    fun getGame(@PathVariable gameId: String): GetGameResponse {
+        gameService.getGame(gameId)?.let {
+            return GetGameResponse(it.players, it.state, it.winner)
+        } ?: run {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Game/moves not found")
+        }
     }
 }
