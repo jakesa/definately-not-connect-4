@@ -7,4 +7,5 @@ interface GameService {
     fun createGame(gameRequest: GameRequest): GameInstance
     fun getGame(gameId: String): GameInstance?
     fun deleteGame(gameId: String): Boolean
+    fun listGames(): List<GameInstance>
 }

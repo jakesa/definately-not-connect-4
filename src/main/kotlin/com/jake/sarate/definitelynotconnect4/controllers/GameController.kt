@@ -26,4 +26,10 @@ class GameController(val gameService: GameService) {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "Game/moves not found")
         }
     }
+
+    @GetMapping(produces = ["application/json"])
+    fun listGames(): GetGamesResponse {
+        val gameIds = gameService.listGames().map { it.gameId }
+        return GetGamesResponse(gameIds)
+    }
 }
