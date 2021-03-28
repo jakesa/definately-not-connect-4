@@ -3,8 +3,8 @@ package com.jake.sarate.definitelynotconnect4.controllers
 import com.jake.sarate.definitelynotconnect4.models.CreateGameResponse
 import com.jake.sarate.definitelynotconnect4.models.GameRequest
 import com.jake.sarate.definitelynotconnect4.models.GetGameResponse
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
+import com.jake.sarate.definitelynotconnect4.models.GetGamesResponse
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -46,5 +46,12 @@ class GameControllerTests {
     fun returnA404WhenAGameIsNotFound() {
         val getResponse = restTemplate.getForEntity("http://localhost:$port/api/drop_token/fakeId", String::class.java)
         assertEquals(HttpStatus.NOT_FOUND, getResponse.statusCode)
+    }
+
+    @Test
+    fun returnTheCurrentListOfGames() {
+        val response = restTemplate.getForEntity("http://localhost:$port/api/drop_token", GetGamesResponse::class.java)
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assert(response.body?.games?.size!! > 0)
     }
 }

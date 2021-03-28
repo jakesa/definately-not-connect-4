@@ -31,4 +31,8 @@ class InMemoryGameService: GameService {
             else -> false
         }
     }
+
+    override fun listGames(): List<GameInstance> {
+        return gameMap.values.toList()
+    }
 }
