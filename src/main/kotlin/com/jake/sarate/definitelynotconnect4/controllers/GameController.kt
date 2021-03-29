@@ -32,4 +32,29 @@ class GameController(val gameService: GameService) {
         val gameIds = gameService.listGames().map { it.gameId }
         return GetGamesResponse(gameIds)
     }
+
+    @PostMapping("/{gameId}/{playerId}")
+    fun postMove(@RequestBody body: PostMoveRequest, @PathVariable gameId: String, @PathVariable playerId: String): PostMoveResponse {
+        gameService.getGame(gameId)?.let {
+            var playerMoveResult: Pair<Int, PlayerMoveResult>
+            if (it.players.contains(playerId)) {
+                playerMoveResult = it.attemptPlayerMove(playerId, body.column)
+            } else {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found or player is not a part of it.")
+            }
+            checkForError(playerMoveResult.second)
+            return PostMoveResponse("$gameId/moves/${playerMoveResult.first}")
+        } ?: run {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found or player is not a part of it.")
+        }
+    }
+
+    private fun checkForError(result: PlayerMoveResult) {
+        when(result.exception) {
+            PlayerMoveException.INVALID_COLUMN_SPECIFICATION,
+            PlayerMoveException.NO_AVAILABLE_SPACES -> throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Malformed input. Illegal move")
+            PlayerMoveException.PLAYED_MOVE_OUT_OF_TURN -> throw ResponseStatusException(HttpStatus.CONFLICT, PlayerMoveException.PLAYED_MOVE_OUT_OF_TURN)
+            PlayerMoveException.UNKNOWN_PLAYER_MOVE_EXCEPTION -> throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, PlayerMoveException.UNKNOWN_PLAYER_MOVE_EXCEPTION)
+        }
+    }
 }
