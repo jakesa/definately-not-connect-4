@@ -96,4 +96,16 @@ class BasicGame(gameSettings: GameSettings, gameBoardFactory: GameBoardFactory):
         }
     }
 
+    override fun listMoves(start: Int?, until: Int?): List<PlayerMoveResult> {
+        val successfulMoves = moves.filter { it.status == MoveResultStatus.SUCCESSFUL }
+        return if (start !== null && until !== null) {
+            val determinedStart = if (start < 0) { 0 } else { start }
+            val determinedUntil = if (until > moves.lastIndex || until < determinedStart) { moves.lastIndex } else { until }
+            moves.subList(determinedStart, determinedUntil)
+        } else if (start !== null && start > 0) {
+            moves.subList(start, moves.lastIndex)
+        } else {
+            successfulMoves
+        }
+    }
 }
