@@ -10,6 +10,12 @@ import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.web.client.HttpClientErrorException
+
+import org.springframework.http.ResponseEntity
+
+
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class GameControllerTests {
@@ -217,4 +223,76 @@ class GameControllerTests {
             }
         }
     }
+
+    @Test
+    fun deletingAPlayerFromTheGameShouldReturnA202() {
+        val createGameRequest = HttpEntity(GameRequest(listOf("player1", "player2"), 4, 4))
+        val createGameResponse = restTemplate.exchange("http://localhost:$port/api/drop_token", HttpMethod.POST , createGameRequest, CreateGameResponse::class.java)
+        assertEquals(HttpStatus.OK, createGameResponse.statusCode)
+        createGameResponse.body?.let {
+            val gameId = it.gameId
+            val getGameResponse = restTemplate.getForEntity("http://localhost:$port/api/drop_token/$gameId", GetGameResponse::class.java)
+            assertEquals(HttpStatus.OK, getGameResponse.statusCode)
+            getGameResponse.body?.let { gameData ->
+                val player1 = gameData.players[0]
+                val response: ResponseEntity<String> = restTemplate.exchange(
+                    "http://localhost:$port/api/drop_token/$gameId/$player1",
+                    HttpMethod.DELETE,
+                    null,
+                    String::class.java
+                )
+                assertEquals(HttpStatus.ACCEPTED, response.statusCode)
+            }
+        }
+    }
+
+    @Test
+    fun deletingAPlayerThatDoesNotExistReturnsA404() {
+        val createGameRequest = HttpEntity(GameRequest(listOf("player1", "player2"), 4, 4))
+        val createGameResponse = restTemplate.exchange("http://localhost:$port/api/drop_token", HttpMethod.POST , createGameRequest, CreateGameResponse::class.java)
+        assertEquals(HttpStatus.OK, createGameResponse.statusCode)
+        createGameResponse.body?.let {
+            val gameId = it.gameId
+            val getGameResponse = restTemplate.getForEntity("http://localhost:$port/api/drop_token/$gameId", GetGameResponse::class.java)
+            assertEquals(HttpStatus.OK, getGameResponse.statusCode)
+            getGameResponse.body?.let {
+                val result = restTemplate.exchange(
+                    "http://localhost:$port/api/drop_token/$gameId/NotReal",
+                    HttpMethod.DELETE,
+                    null,
+                    String::class.java
+                )
+                assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+            }
+        }
+    }
+
+    @Test
+    fun deletingAPlayerFromAGameThatIsAlreadyDONEReturnsA410() {
+        val createGameRequest = HttpEntity(GameRequest(listOf("player1", "player2"), 4, 4))
+        val createGameResponse = restTemplate.exchange("http://localhost:$port/api/drop_token", HttpMethod.POST , createGameRequest, CreateGameResponse::class.java)
+        assertEquals(HttpStatus.OK, createGameResponse.statusCode)
+        createGameResponse.body?.let {
+            val gameId = it.gameId
+            val getGameResponse = restTemplate.getForEntity("http://localhost:$port/api/drop_token/$gameId", GetGameResponse::class.java)
+            assertEquals(HttpStatus.OK, getGameResponse.statusCode)
+            getGameResponse.body?.let { gameData ->
+                val result = restTemplate.exchange(
+                    "http://localhost:$port/api/drop_token/$gameId/${gameData.players[0]}",
+                    HttpMethod.DELETE,
+                    null,
+                    String::class.java
+                )
+                assertEquals(HttpStatus.ACCEPTED, result.statusCode)
+                val secondResult = restTemplate.exchange(
+                    "http://localhost:$port/api/drop_token/$gameId/${gameData.players[1]}",
+                    HttpMethod.DELETE,
+                    null,
+                    String::class.java
+                )
+                assertEquals(HttpStatus.GONE, secondResult.statusCode)
+            }
+        }
+    }
+
 }

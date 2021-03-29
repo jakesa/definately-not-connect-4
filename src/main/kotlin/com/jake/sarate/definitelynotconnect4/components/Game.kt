@@ -10,7 +10,7 @@ interface Game {
     val winner: String?
     val currentTurn: String
     val state: GameState
-    fun quit(playerId: String)
+    fun quit(playerId: String): Pair<Int, PlayerMoveResult>
     fun attemptPlayerMove(playerId: String, column: Int): Pair<Int, PlayerMoveResult>
     fun listMoves(start: Int?, until: Int?): List<PlayerMoveResult>
     fun getMove(moveNumber: Int): PlayerMoveResult?
