@@ -23,7 +23,7 @@ class GameController(val gameService: GameService) {
         gameService.getGame(gameId)?.let {
             return GetGameResponse(it.players, it.state, it.winner)
         } ?: run {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Game/moves not found")
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, GameException.GAME_OR_MOVE_NOT_FOUND)
         }
     }
 
@@ -41,7 +41,7 @@ class GameController(val gameService: GameService) {
             }
             return ListMovesResponse(gameMoves)
         } ?: run {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Game/moves not found.")
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, GameException.GAME_OR_MOVE_NOT_FOUND)
         }
     }
 
@@ -51,10 +51,21 @@ class GameController(val gameService: GameService) {
             it.getMove(moveNumber)?.let { playerMove ->
                 return PlayerMove(playerMove.moveType, playerMove.playerId, playerMove.column)
             } ?: run {
-                throw ResponseStatusException(HttpStatus.NOT_FOUND, "Game/moves not found.")
+                throw ResponseStatusException(HttpStatus.NOT_FOUND, GameException.GAME_OR_MOVE_NOT_FOUND)
             }
         } ?: run {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Game/moves not found.")
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, GameException.GAME_OR_MOVE_NOT_FOUND)
+        }
+    }
+
+    @DeleteMapping("/{gameId}/{playerId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    fun quitGame(@PathVariable gameId: String, @PathVariable playerId: String) {
+        gameService.getGame(gameId)?.let {
+            val quitResult = it.quit(playerId)
+            checkForError(quitResult.second)
+        } ?: run {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, GameException.GAME_OR_PLAYER_NOT_FOUND)
         }
     }
 
@@ -65,21 +76,23 @@ class GameController(val gameService: GameService) {
             if (it.players.contains(playerId)) {
                 playerMoveResult = it.attemptPlayerMove(playerId, body.column)
             } else {
-                throw ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found or player is not a part of it.")
+                throw ResponseStatusException(HttpStatus.NOT_FOUND, GameException.GAME_OR_PLAYER_NOT_FOUND)
             }
             checkForError(playerMoveResult.second)
             return PostMoveResponse("$gameId/moves/${playerMoveResult.first}")
         } ?: run {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found or player is not a part of it.")
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, GameException.GAME_OR_PLAYER_NOT_FOUND)
         }
     }
 
     private fun checkForError(result: PlayerMoveResult) {
         when(result.exception) {
-            PlayerMoveException.INVALID_COLUMN_SPECIFICATION,
-            PlayerMoveException.NO_AVAILABLE_SPACES -> throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Malformed input. Illegal move")
-            PlayerMoveException.PLAYED_MOVE_OUT_OF_TURN -> throw ResponseStatusException(HttpStatus.CONFLICT, PlayerMoveException.PLAYED_MOVE_OUT_OF_TURN)
-            PlayerMoveException.UNKNOWN_PLAYER_MOVE_EXCEPTION -> throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, PlayerMoveException.UNKNOWN_PLAYER_MOVE_EXCEPTION)
+            GameException.INVALID_COLUMN_SPECIFICATION,
+            GameException.NO_AVAILABLE_SPACES -> throw ResponseStatusException(HttpStatus.BAD_REQUEST, GameException.MALFORMED_INPUT_OR_ILLIGAL_MOVE)
+            GameException.PLAYED_MOVE_OUT_OF_TURN -> throw ResponseStatusException(HttpStatus.CONFLICT, GameException.PLAYED_MOVE_OUT_OF_TURN)
+            GameException.UNKNOWN_PLAYER_MOVE_EXCEPTION -> throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, GameException.UNKNOWN_PLAYER_MOVE_EXCEPTION)
+            GameException.GAME_OR_PLAYER_NOT_FOUND -> throw ResponseStatusException(HttpStatus.NOT_FOUND, GameException.GAME_OR_PLAYER_NOT_FOUND)
+            GameException.GAME_IS_ALREADY_DONE -> throw ResponseStatusException(HttpStatus.GONE, GameException.GAME_IS_ALREADY_DONE)
         }
     }
 }

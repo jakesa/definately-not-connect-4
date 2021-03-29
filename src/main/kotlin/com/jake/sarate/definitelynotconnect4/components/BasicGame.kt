@@ -19,17 +19,46 @@ class BasicGame(gameSettings: GameSettings, gameBoardFactory: GameBoardFactory):
     private val moves: MutableList<PlayerMoveResult> = mutableListOf()
     private val gameBoard = gameBoardFactory.create(gameSettings)
 
-    override fun quit(playerId: String) {
-        moves.add(
-            PlayerMoveResult(
+    override fun quit(playerId: String): Pair<Int, PlayerMoveResult> {
+        val result: Pair<Int, PlayerMoveResult>
+        if (state == GameState.DONE) {
+            val moveResult =
+                PlayerMoveResult(
+                    playerId,
+                    moveType = PlayerMoveType.QUIT,
+                    column = null,
+                    row = null,
+                    exception = GameException.GAME_IS_ALREADY_DONE,
+                    status = MoveResultStatus.UNSUCCESSFUL
+                )
+            moves.add(moveResult)
+            return Pair(moves.lastIndex, moveResult)
+        }
+        if (players.contains(playerId) && state != GameState.DONE) {
+            val moveResult = PlayerMoveResult(
                 playerId,
                 moveType = PlayerMoveType.QUIT,
                 column = null,
                 row = null,
                 exception = null,
                 status = MoveResultStatus.SUCCESSFUL
-            ))
-        state = GameState.DONE
+            )
+            moves.add(moveResult)
+            state = GameState.DONE
+            result = Pair(moves.lastIndex, moveResult)
+        } else {
+            val moveResult = PlayerMoveResult(
+                    playerId,
+                    moveType = PlayerMoveType.QUIT,
+                    column = null,
+                    row = null,
+                    exception = GameException.GAME_OR_PLAYER_NOT_FOUND,
+                    status = MoveResultStatus.UNSUCCESSFUL
+                )
+            moves.add(moveResult)
+            result = Pair(moves.lastIndex, moveResult)
+        }
+        return result
     }
 
     override fun attemptPlayerMove(playerId: String, column: Int): Pair<Int, PlayerMoveResult> {
@@ -40,7 +69,7 @@ class BasicGame(gameSettings: GameSettings, gameBoardFactory: GameBoardFactory):
                 status = MoveResultStatus.UNSUCCESSFUL,
                 column = column,
                 row = null,
-                exception = PlayerMoveException.PLAYED_MOVE_OUT_OF_TURN
+                exception = GameException.PLAYED_MOVE_OUT_OF_TURN
             )
             moves.add(moveResult)
             return Pair(moves.lastIndex, moveResult)
@@ -65,7 +94,7 @@ class BasicGame(gameSettings: GameSettings, gameBoardFactory: GameBoardFactory):
                 status = MoveResultStatus.UNSUCCESSFUL,
                 column = column,
                 row = null,
-                exception = PlayerMoveException.INVALID_COLUMN_SPECIFICATION
+                exception = GameException.INVALID_COLUMN_SPECIFICATION
             )
             moves.add(moveResult)
             return Pair(moves.lastIndex, moveResult)
@@ -76,7 +105,7 @@ class BasicGame(gameSettings: GameSettings, gameBoardFactory: GameBoardFactory):
                 status = MoveResultStatus.UNSUCCESSFUL,
                 column = column,
                 row = null,
-                exception = PlayerMoveException.NO_AVAILABLE_SPACES
+                exception = GameException.NO_AVAILABLE_SPACES
             )
             moves.add(moveResult)
             return Pair(moves.lastIndex, moveResult)
@@ -89,7 +118,7 @@ class BasicGame(gameSettings: GameSettings, gameBoardFactory: GameBoardFactory):
                 status = MoveResultStatus.UNSUCCESSFUL,
                 column = column,
                 row = null,
-                exception = PlayerMoveException.UNKNOWN_PLAYER_MOVE_EXCEPTION
+                exception = GameException.UNKNOWN_PLAYER_MOVE_EXCEPTION
             )
             moves.add(moveResult)
             return Pair(moves.lastIndex, moveResult)

@@ -1,5 +1,5 @@
 package com.jake.sarate.definitelynotconnect4.components
 
-import com.jake.sarate.definitelynotconnect4.models.PlayerMoveException
+import com.jake.sarate.definitelynotconnect4.models.GameException
 
-class InvalidColumnSpecificationException(message: String = PlayerMoveException.INVALID_COLUMN_SPECIFICATION): Exception(message)
+class InvalidColumnSpecificationException(message: String = GameException.INVALID_COLUMN_SPECIFICATION): Exception(message)
