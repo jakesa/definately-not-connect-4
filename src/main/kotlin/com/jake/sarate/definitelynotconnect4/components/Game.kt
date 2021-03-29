@@ -13,4 +13,5 @@ interface Game {
     fun quit(playerId: String)
     fun attemptPlayerMove(playerId: String, column: Int): Pair<Int, PlayerMoveResult>
     fun listMoves(start: Int?, until: Int?): List<PlayerMoveResult>
+    fun getMove(moveNumber: Int): PlayerMoveResult?
 }
