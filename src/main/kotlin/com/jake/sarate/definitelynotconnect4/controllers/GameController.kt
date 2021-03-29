@@ -45,6 +45,19 @@ class GameController(val gameService: GameService) {
         }
     }
 
+    @GetMapping("/{gameId}/moves/{moveNumber}", produces = ["application/json"])
+    fun getMove(@PathVariable gameId: String, @PathVariable moveNumber: Int): PlayerMove {
+        gameService.getGame(gameId)?.let {
+            it.getMove(moveNumber)?.let { playerMove ->
+                return PlayerMove(playerMove.moveType, playerMove.playerId, playerMove.column)
+            } ?: run {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND, "Game/moves not found.")
+            }
+        } ?: run {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Game/moves not found.")
+        }
+    }
+
     @PostMapping("/{gameId}/{playerId}")
     fun postMove(@RequestBody body: PostMoveRequest, @PathVariable gameId: String, @PathVariable playerId: String): PostMoveResponse {
         gameService.getGame(gameId)?.let {

@@ -108,4 +108,12 @@ class BasicGame(gameSettings: GameSettings, gameBoardFactory: GameBoardFactory):
             successfulMoves
         }
     }
+
+    override fun getMove(moveNumber: Int): PlayerMoveResult? {
+        return if (moves.indices.contains(moveNumber)) {
+            moves[moveNumber]
+        } else {
+            null
+        }
+    }
 }

@@ -177,4 +177,44 @@ class GameControllerTests {
             assertEquals(HttpStatus.BAD_REQUEST, getMovesResponse.statusCode)
         }
     }
+
+    @Test
+    fun gettingAValidMoveForAGameThatExistsShouldReturn200() {
+        val createGameRequest = HttpEntity(GameRequest(listOf("player1", "player2"), 4, 4))
+        val createGameResponse = restTemplate.exchange("http://localhost:$port/api/drop_token", HttpMethod.POST , createGameRequest, CreateGameResponse::class.java)
+        assertEquals(HttpStatus.OK, createGameResponse.statusCode)
+        createGameResponse.body?.let {
+            val gameId = it.gameId
+            val getGameResponse = restTemplate.getForEntity("http://localhost:$port/api/drop_token/$gameId", GetGameResponse::class.java)
+            assertEquals(HttpStatus.OK, getGameResponse.statusCode)
+            getGameResponse.body?.let { gameData ->
+                val player1 = gameData.players[0]
+                val postMoveRequest = HttpEntity(PostMoveRequest(0))
+                val postMoveResponse = restTemplate.postForEntity("http://localhost:$port/api/drop_token/$gameId/$player1", postMoveRequest, PostMoveResponse::class.java)
+                assertEquals(HttpStatus.OK, postMoveResponse.statusCode)
+                val getMoveResponse = restTemplate.getForEntity("http://localhost:$port/api/drop_token/${postMoveResponse.body?.move}", String::class.java)
+                assertEquals(HttpStatus.OK, getMoveResponse.statusCode)
+            }
+        }
+    }
+
+    @Test
+    fun gettingAMoveThatDoesNotExistShouldReturnA404() {
+        val createGameRequest = HttpEntity(GameRequest(listOf("player1", "player2"), 4, 4))
+        val createGameResponse = restTemplate.exchange("http://localhost:$port/api/drop_token", HttpMethod.POST , createGameRequest, CreateGameResponse::class.java)
+        assertEquals(HttpStatus.OK, createGameResponse.statusCode)
+        createGameResponse.body?.let {
+            val gameId = it.gameId
+            val getGameResponse = restTemplate.getForEntity("http://localhost:$port/api/drop_token/$gameId", GetGameResponse::class.java)
+            assertEquals(HttpStatus.OK, getGameResponse.statusCode)
+            getGameResponse.body?.let { gameData ->
+                val player1 = gameData.players[0]
+                val postMoveRequest = HttpEntity(PostMoveRequest(0))
+                val postMoveResponse = restTemplate.postForEntity("http://localhost:$port/api/drop_token/$gameId/$player1", postMoveRequest, PostMoveResponse::class.java)
+                assertEquals(HttpStatus.OK, postMoveResponse.statusCode)
+                val getMoveResponse = restTemplate.getForEntity("http://localhost:$port/api/drop_token/$gameId/moves/1234", String::class.java)
+                assertEquals(HttpStatus.NOT_FOUND, getMoveResponse.statusCode)
+            }
+        }
+    }
 }
