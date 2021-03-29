@@ -33,6 +33,18 @@ class GameController(val gameService: GameService) {
         return GetGamesResponse(gameIds)
     }
 
+    @GetMapping("/{gameId}/moves", produces = ["application/json"])
+    fun getMoves(@PathVariable gameId: String, @RequestParam start: Int?, @RequestParam until: Int?): ListMovesResponse {
+        gameService.getGame(gameId)?.let {
+            val gameMoves = it.listMoves(start, until).map { moveResult ->
+                PlayerMove(moveResult.moveType, moveResult.playerId, moveResult.column)
+            }
+            return ListMovesResponse(gameMoves)
+        } ?: run {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Game/moves not found.")
+        }
+    }
+
     @PostMapping("/{gameId}/{playerId}")
     fun postMove(@RequestBody body: PostMoveRequest, @PathVariable gameId: String, @PathVariable playerId: String): PostMoveResponse {
         gameService.getGame(gameId)?.let {

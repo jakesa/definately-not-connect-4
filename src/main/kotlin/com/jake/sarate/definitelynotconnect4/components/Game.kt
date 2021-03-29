@@ -12,4 +12,5 @@ interface Game {
     val state: GameState
     fun quit(playerId: String)
     fun attemptPlayerMove(playerId: String, column: Int): Pair<Int, PlayerMoveResult>
+    fun listMoves(start: Int?, until: Int?): List<PlayerMoveResult>
 }
