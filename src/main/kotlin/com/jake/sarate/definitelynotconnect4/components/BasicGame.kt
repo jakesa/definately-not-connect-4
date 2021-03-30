@@ -3,7 +3,7 @@ package com.jake.sarate.definitelynotconnect4.components
 import com.jake.sarate.definitelynotconnect4.models.*
 import java.util.*
 
-class BasicGame(gameSettings: GameSettings, gameBoardFactory: GameBoardFactory): Game {
+class BasicGame(gameSettings: GameSettings, gameBoardFactory: GameBoardFactory, private val winConditionScanner: WinConditionScanner): Game {
 
     override var currentTurn: String = gameSettings.players[0]
         private set
@@ -86,6 +86,14 @@ class BasicGame(gameSettings: GameSettings, gameBoardFactory: GameBoardFactory):
             )
             moves.add(moveResult)
             currentTurn = players.filterNot { it == playerId }[0]
+
+            winConditionScanner.scanForWinner(gameBoard)?.let {
+                println(it)
+                if (it.winner != null || it.isBoardFull) {
+                    state = GameState.DONE
+                    winner = it.winner
+                }
+            }
             return Pair(moves.lastIndex, moveResult)
         } catch (e: InvalidColumnSpecificationException) {
             val moveResult = PlayerMoveResult(

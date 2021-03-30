@@ -8,11 +8,11 @@ enum class GameType {
 }
 
 @Component
-class GameFactory(private val gameBoardFactory: GameBoardFactory) {
+class GameFactory(private val gameBoardFactory: GameBoardFactory, private val winConditionScanner: WinConditionScanner) {
 
     fun create(gameSettings: GameSettings): Game {
         return when(gameSettings.gameType) {
-            GameType.BASIC -> BasicGame(gameSettings, gameBoardFactory)
+            GameType.BASIC -> BasicGame(gameSettings, gameBoardFactory, winConditionScanner)
         }
     }
 }
