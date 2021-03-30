@@ -295,4 +295,24 @@ class GameControllerTests {
         }
     }
 
+    @Test
+    fun whenAPlayerFillsAColumnWithTheirTokensTheyWinTheGame() {
+
+    }
+
+    @Test
+    fun whenAPlayerFillsARowWithTheirTokensTheyWinTheGame() {
+
+    }
+
+    @Test
+    fun whenAPlayerFillsADiagonalRowWithTheirTokensTheyWinTheGame() {
+
+    }
+
+    @Test
+    fun whenAllSlotsAreFilledNoOneWins() {
+
+    }
+
 }
