@@ -1,5 +1,7 @@
 package com.jake.sarate.definitelynotconnect4.components
 
+import com.jake.sarate.definitelynotconnect4.components.gameboard.GameBoard
+import com.jake.sarate.definitelynotconnect4.components.winConditionScanner.WinConditionScanner
 import org.springframework.stereotype.Component
 
 data class GameScanResult(val winner: String?, val isBoardFull: Boolean)
@@ -9,7 +11,7 @@ class BasicWinConditionScanner: WinConditionScanner {
 
     override fun scanForWinner(gameBoard: GameBoard): GameScanResult {
         printBoard(gameBoard)
-        isThereAWinByColumn(gameBoard)?.let {
+        isThereAWinnerByColumn(gameBoard)?.let {
             println("Winner By Column: $it")
             return GameScanResult(it, false)
         }
@@ -36,7 +38,7 @@ class BasicWinConditionScanner: WinConditionScanner {
         return isFull
     }
 
-    private fun isThereAWinByColumn(gameBoard: GameBoard): String? {
+    private fun isThereAWinnerByColumn(gameBoard: GameBoard): String? {
         val columns = gameBoard.getCurrentState()
         return findWinnerIn(columns)
     }

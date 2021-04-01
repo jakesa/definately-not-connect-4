@@ -1,6 +1,7 @@
-package com.jake.sarate.definitelynotconnect4.components
+package com.jake.sarate.definitelynotconnect4.components.game
 
 import com.jake.sarate.definitelynotconnect4.models.*
+import com.jake.sarate.definitelynotconnect4.models.constants.GameState
 
 interface Game {
     val gameId: String

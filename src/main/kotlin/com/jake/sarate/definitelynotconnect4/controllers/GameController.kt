@@ -1,6 +1,10 @@
 package com.jake.sarate.definitelynotconnect4.controllers
 
 import com.jake.sarate.definitelynotconnect4.models.*
+import com.jake.sarate.definitelynotconnect4.models.constants.GameException
+import com.jake.sarate.definitelynotconnect4.models.requests.GameRequest
+import com.jake.sarate.definitelynotconnect4.models.requests.PostMoveRequest
+import com.jake.sarate.definitelynotconnect4.models.responses.*
 import com.jake.sarate.definitelynotconnect4.services.GameService
 
 import org.springframework.http.HttpStatus
@@ -8,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
 @RestController
-@RequestMapping("/api/drop_token")
+@RequestMapping("/drop_token")
 class GameController(val gameService: GameService) {
 
     @PostMapping(consumes = ["application/json"], produces = ["application/json"])

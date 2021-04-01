@@ -1,9 +1,18 @@
-package com.jake.sarate.definitelynotconnect4.components
+package com.jake.sarate.definitelynotconnect4.components.game
 
+import com.jake.sarate.definitelynotconnect4.components.*
+import com.jake.sarate.definitelynotconnect4.components.exceptions.InvalidColumnSpecificationException
+import com.jake.sarate.definitelynotconnect4.components.exceptions.NoAvailableSpacesException
+import com.jake.sarate.definitelynotconnect4.components.winConditionScanner.WinConditionScanner
 import com.jake.sarate.definitelynotconnect4.models.*
+import com.jake.sarate.definitelynotconnect4.models.constants.GameException
+import com.jake.sarate.definitelynotconnect4.models.constants.GameState
+import com.jake.sarate.definitelynotconnect4.models.constants.MoveResultStatus
+import com.jake.sarate.definitelynotconnect4.models.constants.PlayerMoveType
 import java.util.*
 
-class BasicGame(gameSettings: GameSettings, gameBoardFactory: GameBoardFactory, private val winConditionScanner: WinConditionScanner): Game {
+class BasicGame(gameSettings: GameSettings, gameBoardFactory: GameBoardFactory, private val winConditionScanner: WinConditionScanner):
+    Game {
 
     override var currentTurn: String = gameSettings.players[0]
         private set

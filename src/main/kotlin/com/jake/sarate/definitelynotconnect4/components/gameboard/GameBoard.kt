@@ -1,4 +1,4 @@
-package com.jake.sarate.definitelynotconnect4.components
+package com.jake.sarate.definitelynotconnect4.components.gameboard
 
 import com.jake.sarate.definitelynotconnect4.models.PlayerToken
 
