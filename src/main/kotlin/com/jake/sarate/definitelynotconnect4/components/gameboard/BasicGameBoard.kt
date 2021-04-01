@@ -1,5 +1,7 @@
-package com.jake.sarate.definitelynotconnect4.components
+package com.jake.sarate.definitelynotconnect4.components.gameboard
 
+import com.jake.sarate.definitelynotconnect4.components.exceptions.InvalidColumnSpecificationException
+import com.jake.sarate.definitelynotconnect4.components.exceptions.NoAvailableSpacesException
 import com.jake.sarate.definitelynotconnect4.models.PlayerToken
 import java.util.*
 

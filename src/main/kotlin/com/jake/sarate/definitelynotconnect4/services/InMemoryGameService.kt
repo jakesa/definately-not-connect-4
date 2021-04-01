@@ -1,7 +1,8 @@
 package com.jake.sarate.definitelynotconnect4.services
 
 import com.jake.sarate.definitelynotconnect4.components.*
-import com.jake.sarate.definitelynotconnect4.models.GameRequest
+import com.jake.sarate.definitelynotconnect4.components.game.Game
+import com.jake.sarate.definitelynotconnect4.models.requests.GameRequest
 import com.jake.sarate.definitelynotconnect4.models.GameSettings
 import org.springframework.stereotype.Service
 

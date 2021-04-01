@@ -1,5 +1,8 @@
 package com.jake.sarate.definitelynotconnect4.models
 
+import com.jake.sarate.definitelynotconnect4.models.constants.MoveResultStatus
+import com.jake.sarate.definitelynotconnect4.models.constants.PlayerMoveType
+
 data class PlayerMoveResult(
     val playerId: String,
     val moveType: PlayerMoveType,

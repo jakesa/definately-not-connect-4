@@ -1,6 +1,11 @@
 package com.jake.sarate.definitelynotconnect4.controllers
 
-import com.jake.sarate.definitelynotconnect4.models.*
+import com.jake.sarate.definitelynotconnect4.models.requests.GameRequest
+import com.jake.sarate.definitelynotconnect4.models.requests.PostMoveRequest
+import com.jake.sarate.definitelynotconnect4.models.responses.CreateGameResponse
+import com.jake.sarate.definitelynotconnect4.models.responses.GetGameResponse
+import com.jake.sarate.definitelynotconnect4.models.responses.GetGamesResponse
+import com.jake.sarate.definitelynotconnect4.models.responses.PostMoveResponse
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,7 +15,6 @@ import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
-import org.springframework.web.client.HttpClientErrorException
 
 import org.springframework.http.ResponseEntity
 

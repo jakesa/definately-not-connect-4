@@ -1,5 +1,7 @@
 package com.jake.sarate.definitelynotconnect4.components
 
+import com.jake.sarate.definitelynotconnect4.components.gameboard.BasicGameBoard
+import com.jake.sarate.definitelynotconnect4.components.gameboard.GameBoard
 import com.jake.sarate.definitelynotconnect4.models.GameSettings
 import org.springframework.stereotype.Component
 

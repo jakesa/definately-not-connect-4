@@ -1,7 +1,7 @@
 package com.jake.sarate.definitelynotconnect4.services
 
-import com.jake.sarate.definitelynotconnect4.components.Game
-import com.jake.sarate.definitelynotconnect4.models.GameRequest
+import com.jake.sarate.definitelynotconnect4.components.game.Game
+import com.jake.sarate.definitelynotconnect4.models.requests.GameRequest
 
 interface GameService {
     fun createGame(gameRequest: GameRequest): Game

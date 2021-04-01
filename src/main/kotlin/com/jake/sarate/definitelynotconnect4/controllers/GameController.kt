@@ -1,6 +1,10 @@
 package com.jake.sarate.definitelynotconnect4.controllers
 
 import com.jake.sarate.definitelynotconnect4.models.*
+import com.jake.sarate.definitelynotconnect4.models.constants.GameException
+import com.jake.sarate.definitelynotconnect4.models.requests.GameRequest
+import com.jake.sarate.definitelynotconnect4.models.requests.PostMoveRequest
+import com.jake.sarate.definitelynotconnect4.models.responses.*
 import com.jake.sarate.definitelynotconnect4.services.GameService
 
 import org.springframework.http.HttpStatus

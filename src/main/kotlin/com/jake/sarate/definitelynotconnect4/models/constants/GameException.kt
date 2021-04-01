@@ -1,4 +1,4 @@
-package com.jake.sarate.definitelynotconnect4.models
+package com.jake.sarate.definitelynotconnect4.models.constants
 
 class GameException {
     companion object {
