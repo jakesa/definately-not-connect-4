@@ -5,6 +5,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	kotlin("jvm") version "1.4.31"
 	kotlin("plugin.spring") version "1.4.31"
+	application
 }
 
 group = "com.jake.sarate"
@@ -15,6 +16,11 @@ configurations {
 	compileOnly {
 		extendsFrom(configurations.annotationProcessor.get())
 	}
+}
+
+
+configure<ApplicationPluginConvention> {
+	mainClassName = "com.jake.sarate.definitelynotconnect4.DefinitelyNotConnect4ApplicationKt"
 }
 
 repositories {
