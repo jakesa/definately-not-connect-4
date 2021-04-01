@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
 @RestController
-@RequestMapping("/api/drop_token")
+@RequestMapping("/drop_token")
 class GameController(val gameService: GameService) {
 
     @PostMapping(consumes = ["application/json"], produces = ["application/json"])
