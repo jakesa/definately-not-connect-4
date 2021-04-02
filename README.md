@@ -1,7 +1,7 @@
 # Definitely Not Connect 4
 Definitely Not Connect 4 is a Connect 4 clone in RESTful API form.
 
-##Running The Application
+## Running The Application
 Definitely Not Connect 4 is a Kotlin/SpringBoot application that uses Gradle as its package manager and build tool.
 To run the application locally, you will want to make sure that you have JDK 11 available on your machine and run the following command from the root of the project:
 
@@ -9,7 +9,7 @@ To run the application locally, you will want to make sure that you have JDK 11 
 $ ./gradlew run
 ```
 
-###Testing The Application
+### Testing The Application
 To run the unit and container integration test suites, run the following command from the root of the project:
 
 ```shell
@@ -27,7 +27,7 @@ By default, this test run uses a silent output mode. To see all of the output in
 $ ./gradlew cleanTest test -i
 ```
 
-##Using The API
+## Using The API
 
 Once the application is up and running, you free to start a new game.
 
